@@ -14,6 +14,7 @@ import {
 import storage from "./storage";
 import authApi from "@/features/auth/authApi";
 import authReducer from "@/features/auth/authSlice";
+import postApi from "@/features/post/postApi";
 
 const persistConfig = {
   key: "root",
@@ -24,6 +25,7 @@ const persistConfig = {
 const appReducer = combineReducers({
   auth: authReducer,
   [authApi.reducerPath]: authApi.reducer,
+  [postApi.reducerPath]: postApi.reducer,
 });
 
 type AppState = ReturnType<typeof appReducer>;
@@ -46,7 +48,7 @@ export const makeStore = () =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(authApi.middleware),
+      }).concat(authApi.middleware, postApi.middleware),
   });
 
 export const store = makeStore();

@@ -5,7 +5,9 @@ const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   prepareHeaders: (headers, { getState }) => {
     const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      typeof window !== "undefined"
+        ? localStorage.getItem("access_token")
+        : null;
 
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
@@ -23,7 +25,6 @@ export const authApi = createApi({
       query: () => ({
         url: "/me",
         method: "GET",
-        credentials: "include",
       }),
     }),
     login: builder.mutation<AuthResponse, LoginRequest>({
@@ -43,10 +44,7 @@ export const authApi = createApi({
   }),
 });
 
-export const {
-  useGetMeQuery,
-  useLoginMutation,
-  useRegistrationMutation,
-} = authApi;
+export const { useGetMeQuery, useLoginMutation, useRegistrationMutation } =
+  authApi;
 
 export default authApi;

@@ -15,7 +15,7 @@ export default function AuthProvider({
   const token =
     typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
-  const { data, isSuccess, isError } = useGetMeQuery(undefined, {
+  const { data, isSuccess, isError, error } = useGetMeQuery(undefined, {
     skip: !token,
   });
 
@@ -25,6 +25,7 @@ export default function AuthProvider({
     }
 
     if (isError) {
+      console.log(error);
       localStorage.removeItem("access_token");
       dispatch(resetUser());
     }
