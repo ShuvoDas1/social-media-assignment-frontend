@@ -23,7 +23,7 @@ const baseQuery = fetchBaseQuery({
 
 export const postApi = createApi({
   reducerPath: "postApi",
-  tagTypes: ["Posts", "Reactions"],
+  tagTypes: ["Posts", "Reactions", "Comments"],
   baseQuery: baseQuery,
   endpoints: (builder) => ({
     createPost: builder.mutation<any, PostRequest>({
@@ -74,15 +74,30 @@ export const postApi = createApi({
       },
       providesTags: ["Reactions"],
     }),
-    postComment: builder.mutation<any, { postId: number; content: string }>({
-      query: ({ postId, content }) => {
+    postComment: builder.mutation<
+      any,
+      { postId: number; comment: string; parentId?: number | null }
+    >({
+      query: ({ postId, comment, parentId }) => {
         return {
           url: `/posts/${postId}/comment`,
           method: "POST",
-          body: { content },
+          body: { comment, parent_id: parentId },
         };
       },
-      invalidatesTags: ["Posts"],
+      invalidatesTags: ["Comments"],
+    }),
+    getPostComments: builder.query<
+      any,
+      { postId: number }
+    >({
+      query: ({ postId }) => {
+        return {
+          url: `/posts/${postId}/reactions`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Reactions"],
     }),
   }),
 });
@@ -93,6 +108,7 @@ export const {
   useLazyGetPostsQuery,
   usePostReactionMutation,
   useGetPostReactionsQuery,
+  usePostCommentMutation,
 } = postApi;
 
 export default postApi;
