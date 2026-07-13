@@ -1,24 +1,47 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/features/auth/authApi";
 import { LoginRequest } from "@/features/auth/authTypes";
-import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser } from "@/features/auth/authSlice";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
   const [formData, setFormData] = useState<LoginRequest>({
     email: "",
     password: "",
   });
   const [login, { data, error, isLoading }] = useLoginMutation();
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      router.replace("/feed");
+    }
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const result = await login(formData).unwrap();
-      console.log("Login result:", result);
-    } catch (error) {
-      console.error("Login error:", error);
+      const { data, message } = result;
+
+      if (!data || !data.access_token) {
+        throw new Error("Login failed");
+      }
+
+      localStorage.setItem("access_token", data.access_token);
+      dispatch(setUser(data.user));
+      toast.success(message);
+      router.replace("/feed");
+    } catch (error: any) {
+      toast.error(error.data.message);
     }
   };
 
@@ -176,7 +199,10 @@ export default function LoginPage() {
                       <div className="_social_login_bottom_txt">
                         <p className="_social_login_bottom_txt_para">
                           Dont have an account?{" "}
-                          <a href="#" onClick={() => redirect("/registration")}>
+                          <a
+                            href="#"
+                            onClick={() => router.replace("/registration")}
+                          >
                             Create New Account
                           </a>
                         </p>

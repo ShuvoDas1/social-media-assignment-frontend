@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
+import AuthProvider from "../components/AuthProvider";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Buddy Script",
@@ -34,7 +36,10 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/css/responsive.css" />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <AuthProvider>{children}</AuthProvider>
+          <ToastContainer position="top-right" autoClose={3000} theme="light" />
+        </Providers>
       </body>
     </html>
   );

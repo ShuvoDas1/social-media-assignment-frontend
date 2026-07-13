@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RegistrationRequest } from "@/features/auth/authTypes";
 import { useRegistrationMutation } from "@/features/auth/authApi";
+import { setUser } from "@/features/auth/authSlice";
+import { useAppDispatch } from "@/store/hooks";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function RegistrationPage() {
   const [formData, setFormData] = useState<RegistrationRequest>({
@@ -12,8 +16,17 @@ export default function RegistrationPage() {
     password: "",
     password_confirmation: "",
   });
-
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [registration, { isLoading }] = useRegistrationMutation();
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      router.replace("/feed");
+    }
+  }, []);
 
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,11 +43,16 @@ export default function RegistrationPage() {
       }
 
       const result = await registration(formData).unwrap();
-      console.log("success", result.message);
-      console.log("Registration successful:", result);
+      const { data, message } = result;
+      if (!data || !data.access_token) {
+        throw new Error("Registration failed");
+      }
+      localStorage.setItem("access_token", data.access_token);
+      dispatch(setUser(data.user));
+      toast.success(message);
+      router.replace("/feed");
     } catch (error: any) {
-      console.log("error", error.data.message);
-      console.error("Registration failed:", error);
+      toast.error(error.data.message);
     }
   };
 
@@ -119,6 +137,34 @@ export default function RegistrationPage() {
                   </div>
                   <form className="_social_registration_form">
                     <div className="row">
+                      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div className="_social_registration_form_input _mar_b14">
+                          <label className="_social_registration_label _mar_b8">
+                            First Name
+                          </label>
+                          <input
+                            type="text"
+                            name="fname"
+                            value={formData.fname}
+                            onChange={handleInputChange}
+                            className="form-control _social_registration_input"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div className="_social_registration_form_input _mar_b14">
+                          <label className="_social_registration_label _mar_b8">
+                            Last Name
+                          </label>
+                          <input
+                            type="text"
+                            name="lname"
+                            value={formData.lname}
+                            onChange={handleInputChange}
+                            className="form-control _social_registration_input"
+                          />
+                        </div>
+                      </div>
                       <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div className="_social_registration_form_input _mar_b14">
                           <label className="_social_registration_label _mar_b8">

@@ -13,6 +13,7 @@ import {
 } from "redux-persist";
 import storage from "./storage";
 import authApi from "@/features/auth/authApi";
+import authReducer from "@/features/auth/authSlice";
 
 const persistConfig = {
   key: "root",
@@ -21,6 +22,7 @@ const persistConfig = {
 };
 
 const appReducer = combineReducers({
+  auth: authReducer,
   [authApi.reducerPath]: authApi.reducer,
 });
 
