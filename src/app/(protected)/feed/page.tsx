@@ -17,6 +17,7 @@ import PostComments from "./components/PostComments";
 import { useAppDispatch } from "@/store/hooks";
 import { resetUser } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
+import { useLogoutMutation } from "@/features/auth/authApi";
 
 export default function FeedPage() {
   const [postData, setPostData] = useState<PostRequest>({
@@ -45,6 +46,7 @@ export default function FeedPage() {
     postComment,
     { isLoading: commentLoading, isSuccess: commentSuccess },
   ] = usePostCommentMutation();
+  const [logout] = useLogoutMutation();
 
   const { data: posts, isLoading: getPostsLoading } = useGetPostsQuery();
 
@@ -142,12 +144,15 @@ export default function FeedPage() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
-      localStorage.removeItem("access_token");
-      dispatch(resetUser());
-      router.replace("/login");
-      toast.success("Logged out successfully");
+      const res = await logout().unwrap();
+      if (res?.success) {
+        toast.success(res?.message || "Logged out successfully");
+        localStorage.removeItem("access_token");
+        dispatch(resetUser());
+        router.replace("/login");
+      }
     } catch (error: any) {
       console.log(error);
       toast.error(error?.message || "Failed to log out");
