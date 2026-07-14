@@ -41,7 +41,7 @@ export default function LoginPage() {
       toast.success(message);
       router.replace("/feed");
     } catch (error: any) {
-      toast.error(error.data.message);
+      toast.error(error?.data?.message || "Invalid email/password");
     }
   };
 
