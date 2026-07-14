@@ -100,9 +100,9 @@ export default function FeedPage() {
 
   const handlePostCreate = async () => {
     try {
-      const res = await createPost(postData);
-      if (createPostSuccess) {
-        toast.success("Post created successfully");
+      const res = await createPost(postData).unwrap();
+      if (res?.success) {
+        toast.success(res?.message || "Post created successfully");
         setPostData({
           content: "",
           images: [],
@@ -112,7 +112,7 @@ export default function FeedPage() {
       }
     } catch (error: any) {
       console.log(error);
-      toast.error("Failed to create post");
+      toast.error(error?.data?.message || "Failed to create post");
     }
   };
 
