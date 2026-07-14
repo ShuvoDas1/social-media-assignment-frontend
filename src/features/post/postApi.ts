@@ -61,9 +61,7 @@ export const postApi = createApi({
           body: { react },
         };
       },
-      invalidatesTags: (result, error, { postId }) => [
-        { type: "Posts", id: postId },
-      ],
+      invalidatesTags: ["Posts"],
     }),
     getPostReactions: builder.query<
       GetPostReactionsResponse,
@@ -75,9 +73,7 @@ export const postApi = createApi({
           method: "GET",
         };
       },
-      providesTags: (result, error, { postId }) => [
-        { type: "Reactions", id: postId },
-      ],
+      providesTags: ["Reactions"],
     }),
     postComment: builder.mutation<
       any,
@@ -90,9 +86,7 @@ export const postApi = createApi({
           body: { comment, parent_id: parentId },
         };
       },
-      invalidatesTags: (result, error, { postId }) => [
-        { type: "Comments", id: postId },
-      ],
+      invalidatesTags: ["Comments"],
     }),
     getPostComments: builder.query<GetPostCommentsResponse, { postId: number }>(
       {
@@ -102,9 +96,7 @@ export const postApi = createApi({
             method: "GET",
           };
         },
-        providesTags: (result, error, { postId }) => [
-          { type: "Comments", id: postId },
-        ],
+        providesTags: ["Comments"],
       },
     ),
 
@@ -114,14 +106,12 @@ export const postApi = createApi({
     >({
       query: ({ commentId, react }) => {
         return {
-          url: `/posts/comments/${commentId}/reaction`,
+          url: `/comments/${commentId}/reaction`,
           method: "POST",
           body: { react },
         };
       },
-      invalidatesTags: (result, error, { commentId }) => [
-        { type: "Comments", id: commentId },
-      ],
+      invalidatesTags: ["Comments"],
     }),
   }),
 });

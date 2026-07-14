@@ -7,24 +7,21 @@ import {
 import { useState } from "react";
 import CommentItem from "./CommentItem";
 import { toast } from "react-toastify";
+import { GetPostCommentsResponse } from "@/features/post/postTypes";
 
 interface CommentsModalProps {
   postId: number;
+  isLoading: boolean;
+  commentsRes: GetPostCommentsResponse | undefined;
+  refetch: () => void;
 }
 
-export default function PostComments({ postId }: CommentsModalProps) {
-  const {
-    data: commentsRes,
-    isLoading,
-    error,
-    refetch,
-  } = useGetPostCommentsQuery(
-    { postId },
-    {
-      refetchOnMountOrArgChange: true,
-    },
-  );
-
+export default function PostComments({
+  postId,
+  isLoading,
+  commentsRes,
+  refetch,
+}: CommentsModalProps) {
   const [isReplayComment, setIsReplayComment] = useState<boolean>(false);
   const [replayData, setReplayData] = useState<{
     comment: string;
