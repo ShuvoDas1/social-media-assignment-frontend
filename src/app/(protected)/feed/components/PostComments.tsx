@@ -17,6 +17,7 @@ export default function PostComments({ postId }: CommentsModalProps) {
     data: commentsRes,
     isLoading,
     error,
+    refetch,
   } = useGetPostCommentsQuery(
     { postId },
     {
@@ -50,6 +51,7 @@ export default function PostComments({ postId }: CommentsModalProps) {
         comment: "",
         parentId: null,
       });
+      refetch();
     } catch (error: any) {
       console.log(error);
       toast.error(error?.message || "Failed to react to post");
