@@ -48,7 +48,12 @@ export default function FeedPage() {
   ] = usePostCommentMutation();
   const [logout] = useLogoutMutation();
 
-  const { data: posts, isLoading: getPostsLoading } = useGetPostsQuery();
+  const { data: posts, isLoading: getPostsLoading } = useGetPostsQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
