@@ -17,7 +17,12 @@ export default function PostComments({ postId }: CommentsModalProps) {
     data: commentsRes,
     isLoading,
     error,
-  } = useGetPostCommentsQuery({ postId });
+  } = useGetPostCommentsQuery(
+    { postId },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   const [isReplayComment, setIsReplayComment] = useState<boolean>(false);
   const [replayData, setReplayData] = useState<{
@@ -53,18 +58,20 @@ export default function PostComments({ postId }: CommentsModalProps) {
 
   return (
     <>
-      {commentsRes?.data?.map((comment) => (
-        <CommentItem
-          key={comment.id}
-          comment={comment}
-          postId={postId}
-          isReplayComment={isReplayComment}
-          replayData={replayData}
-          setIsReplayComment={setIsReplayComment}
-          setReplayData={setReplayData}
-          handleReplySubmit={handleReplySubmit}
-        />
-      ))}
+      {isLoading
+        ? "Loading Comment..."
+        : commentsRes?.data?.map((comment) => (
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              postId={postId}
+              isReplayComment={isReplayComment}
+              replayData={replayData}
+              setIsReplayComment={setIsReplayComment}
+              setReplayData={setReplayData}
+              handleReplySubmit={handleReplySubmit}
+            />
+          ))}
     </>
   );
 }
