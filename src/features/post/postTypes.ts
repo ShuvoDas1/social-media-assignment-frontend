@@ -43,8 +43,6 @@ export interface GetPostsResponse {
   meta: Meta;
 }
 
-
-
 export interface Reaction {
   id: number;
   post_id: number;
@@ -66,3 +64,27 @@ export interface GetPostReactionsResponse {
   meta: Meta;
 }
 
+export interface Comment {
+  comment: string;
+  id: number;
+  like_count: number;
+  parent_id: number | null;
+  user_id: number;
+  post_id: number;
+  created_at: string;
+  is_liked: boolean;
+  user: {
+    id: number;
+    email: string;
+    full_name: string;
+  };
+  replies: Comment[];
+}
+
+export interface GetPostCommentsResponse {
+  code: number;
+  success: boolean;
+  message: string;
+  data: Comment[];
+  meta: Meta;
+}

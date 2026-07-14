@@ -5,20 +5,43 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store";
 import { useGetMeQuery } from "@/features/auth/authApi";
+import moment from "moment";
+import { setUser } from "@/features/auth/authSlice";
 
 export default function RootPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state: RootState) => state.auth.user);
-  const {data: userInfo, isLoading: loadingUserInfo} = useGetMeQuery();
+  const { data: userInfo, isLoading: loadingUserInfo } = useGetMeQuery();
+
+  moment.updateLocale("en", {
+    relativeTime: {
+      future: "in %s",
+      past: "%s",
+      s: "1s",
+      ss: "%ds",
+      m: "1m",
+      mm: "%dm",
+      h: "1h",
+      hh: "%dh",
+      d: "1d",
+      dd: "%dd",
+      w: "1w",
+      ww: "%dw",
+      M: "1mo",
+      MM: "%dmo",
+      y: "1y",
+      yy: "%dy",
+    },
+  });
 
   useEffect(() => {
-    if(user && !loadingUserInfo){
+    if (userInfo && !loadingUserInfo) {
+      dispatch(setUser(userInfo));
       router.replace("/feed");
-    }else{
+    } else {
       router.replace("/login");
     }
-  }, [user, router]);
+  }, [userInfo, loadingUserInfo, router, dispatch]);
 
   return null;
 }

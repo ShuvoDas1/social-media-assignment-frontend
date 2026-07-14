@@ -3,6 +3,7 @@ import {
   PostRequest,
   GetPostsResponse,
   GetPostReactionsResponse,
+  GetPostCommentsResponse,
 } from "./postTypes";
 
 const baseQuery = fetchBaseQuery({
@@ -87,17 +88,30 @@ export const postApi = createApi({
       },
       invalidatesTags: ["Comments"],
     }),
-    getPostComments: builder.query<
+    getPostComments: builder.query<GetPostCommentsResponse, { postId: number }>(
+      {
+        query: ({ postId }) => {
+          return {
+            url: `/posts/${postId}/comments`,
+            method: "GET",
+          };
+        },
+        providesTags: ["Comments"],
+      },
+    ),
+
+    commentReaction: builder.mutation<
       any,
-      { postId: number }
+      { commentId: number; react: string }
     >({
-      query: ({ postId }) => {
+      query: ({ commentId, react }) => {
         return {
-          url: `/posts/${postId}/reactions`,
-          method: "GET",
+          url: `/posts/comments/${commentId}/reaction`,
+          method: "POST",
+          body: { react },
         };
       },
-      providesTags: ["Reactions"],
+      invalidatesTags: ["Comments"],
     }),
   }),
 });
@@ -109,6 +123,8 @@ export const {
   usePostReactionMutation,
   useGetPostReactionsQuery,
   usePostCommentMutation,
+  useGetPostCommentsQuery,
+  useCommentReactionMutation,
 } = postApi;
 
 export default postApi;
