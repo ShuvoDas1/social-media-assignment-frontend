@@ -86,7 +86,9 @@ export const postApi = createApi({
           body: { comment, parent_id: parentId },
         };
       },
-      invalidatesTags: ["Comments"],
+      invalidatesTags: (result, error, { postId }) => [
+        { type: "Comments", id: postId },
+      ],
     }),
     getPostComments: builder.query<GetPostCommentsResponse, { postId: number }>(
       {
@@ -96,7 +98,9 @@ export const postApi = createApi({
             method: "GET",
           };
         },
-        providesTags: ["Comments"],
+        providesTags: (result, error, { postId }) => [
+          { type: "Comments", id: postId },
+        ],
       },
     ),
 

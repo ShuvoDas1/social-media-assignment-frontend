@@ -8,7 +8,6 @@ import {
   useGetPostsQuery,
   usePostReactionMutation,
   usePostCommentMutation,
-  useGetPostCommentsQuery,
 } from "@/features/post/postApi";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -53,19 +52,6 @@ export default function FeedPage() {
     undefined,
     {
       refetchOnMountOrArgChange: true,
-    },
-  );
-
-  const {
-    data: commentsRes,
-    isLoading: commentsLoading,
-    error,
-    refetch,
-  } = useGetPostCommentsQuery(
-    { postId: Number(selectedPostId) },
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !selectedPostId,
     },
   );
 
@@ -147,17 +133,16 @@ export default function FeedPage() {
     }
   };
 
-  const handleCommentSubmit = async () => {
+  const handleCommentSubmit = async (postId: number) => {
     try {
       const res = await postComment({
-        postId: Number(selectedPostId),
+        postId,
         comment: commentData.comment,
       }).unwrap();
       toast.success("commented successfully");
       setCommentData({
         comment: "",
       });
-      setSelectedPostId(null);
     } catch (error: any) {
       console.log(error);
       toast.error(error?.message || "Failed to react to post");
@@ -2647,10 +2632,9 @@ export default function FeedPage() {
                           <CommentInput
                             postId={post.id}
                             commentData={commentData}
-                            setComment={(comment) => {
-                              setCommentData({ ...commentData, comment });
-                              setSelectedPostId(post.id);
-                            }}
+                            setComment={(comment) =>
+                              setCommentData({ ...commentData, comment })
+                            }
                             handleCommentSubmit={handleCommentSubmit}
                           />
                           {post?.counts?.comment > 0 && (
@@ -2663,13 +2647,7 @@ export default function FeedPage() {
                                   View {post?.counts?.comment} previous comments
                                 </button>
                               </div>
-                              
-                              <PostComments
-                                postId={post.id}
-                                isLoading={commentsLoading}
-                                commentsRes={commentsRes}
-                                refetch={refetch}
-                              />
+                              <PostComments postId={post.id} />
                             </div>
                           )}
                         </div>
