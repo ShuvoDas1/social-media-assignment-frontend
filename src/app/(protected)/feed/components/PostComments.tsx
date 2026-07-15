@@ -10,12 +10,12 @@ import { toast } from "react-toastify";
 
 interface CommentsModalProps {
   postId: number;
-  onRefetchReady: (refetch: () => void) => void;
+  // onRefetchReady: (refetch: () => void) => void;
 }
 
 export default function PostComments({
   postId,
-  onRefetchReady,
+  // onRefetchReady,
 }: CommentsModalProps) {
   const [isReplayComment, setIsReplayComment] = useState<boolean>(false);
   const [replayData, setReplayData] = useState<{
@@ -38,9 +38,9 @@ export default function PostComments({
     },
   );
 
-  useEffect(() => {
-    onRefetchReady(refetch);
-  }, [refetch]);
+  // useEffect(() => {
+  //   onRefetchReady(refetch);
+  // }, [refetch]);
 
   const [
     postComment,

@@ -32,9 +32,9 @@ export default function FeedPage() {
   const [commentData, setCommentData] = useState({
     comment: "",
   });
-  const [commentsRefetch, setCommentsRefetch] = useState<(() => void) | null>(
-    null,
-  );
+  // const [commentsRefetch, setCommentsRefetch] = useState<(() => void) | null>(
+  //   null,
+  // );
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -142,7 +142,7 @@ export default function FeedPage() {
       setCommentData({
         comment: "",
       });
-      commentsRefetch?.();
+      // commentsRefetch?.();
     } catch (error: any) {
       console.log(error);
       toast.error(error?.message || "Failed to react to post");
@@ -2637,8 +2637,9 @@ export default function FeedPage() {
                             }
                             handleCommentSubmit={handleCommentSubmit}
                           />
-                          {post?.counts?.comment > 0 && (
-                            <div className="_timline_comment_main">
+
+                          <div className="_timline_comment_main">
+                            {post?.counts?.comment > 0 && (
                               <div className="_previous_comment">
                                 <button
                                   type="button"
@@ -2647,9 +2648,9 @@ export default function FeedPage() {
                                   View {post?.counts?.comment} previous comments
                                 </button>
                               </div>
-                              <PostComments postId={post.id} onRefetchReady={setCommentsRefetch} />
-                            </div>
-                          )}
+                            )}
+                            <PostComments postId={post.id} />
+                          </div>
                         </div>
                       ))}
                     </div>
