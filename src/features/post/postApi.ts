@@ -90,6 +90,7 @@ export const postApi = createApi({
       },
       invalidatesTags: (result, error, { postId }) => [
         { type: "Comments", id: postId },
+        { type: "Posts" },
       ],
     }),
     getPostComments: builder.query<GetPostCommentsResponse, { postId: number }>(
