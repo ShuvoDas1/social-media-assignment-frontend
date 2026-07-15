@@ -100,7 +100,9 @@ export const postApi = createApi({
             method: "GET",
           };
         },
-        providesTags: ["Comments"],
+        providesTags: (result, error, { postId }) => [
+          { type: "Comments", id: postId },
+        ],
       },
     ),
 
@@ -115,7 +117,9 @@ export const postApi = createApi({
           body: { react },
         };
       },
-      invalidatesTags: ["Comments"],
+      invalidatesTags: (result, error, { commentId, postId }) => [
+        { type: "Comments", id: postId },
+      ],
     }),
   }),
 });
