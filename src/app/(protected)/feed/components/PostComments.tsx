@@ -4,15 +4,28 @@ import {
   useGetPostCommentsQuery,
   usePostCommentMutation,
 } from "@/features/post/postApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommentItem from "./CommentItem";
 import { toast } from "react-toastify";
 
 interface CommentsModalProps {
   postId: number;
+  onRefetchReady: (refetch: () => void) => void;
 }
 
-export default function PostComments({ postId }: CommentsModalProps) {
+export default function PostComments({
+  postId,
+  onRefetchReady,
+}: CommentsModalProps) {
+  const [isReplayComment, setIsReplayComment] = useState<boolean>(false);
+  const [replayData, setReplayData] = useState<{
+    comment: string;
+    parentId: number | null;
+  }>({
+    comment: "",
+    parentId: null,
+  });
+
   const {
     data: commentsRes,
     isLoading,
@@ -25,14 +38,9 @@ export default function PostComments({ postId }: CommentsModalProps) {
     },
   );
 
-  const [isReplayComment, setIsReplayComment] = useState<boolean>(false);
-  const [replayData, setReplayData] = useState<{
-    comment: string;
-    parentId: number | null;
-  }>({
-    comment: "",
-    parentId: null,
-  });
+  useEffect(() => {
+    onRefetchReady(refetch);
+  }, [refetch]);
 
   const [
     postComment,

@@ -32,6 +32,9 @@ export default function FeedPage() {
   const [commentData, setCommentData] = useState({
     comment: "",
   });
+  const [commentsRefetch, setCommentsRefetch] = useState<(() => void) | null>(
+    null,
+  );
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -40,12 +43,8 @@ export default function FeedPage() {
     createPost,
     { isLoading: createPostLoading, isSuccess: createPostSuccess },
   ] = useCreatePostMutation();
-  const [reactPost, { isLoading: reactLoading, isSuccess: reactSuccess }] =
-    usePostReactionMutation();
-  const [
-    postComment,
-    { isLoading: commentLoading, isSuccess: commentSuccess },
-  ] = usePostCommentMutation();
+  const [reactPost] = usePostReactionMutation();
+  const [postComment] = usePostCommentMutation();
   const [logout] = useLogoutMutation();
 
   const { data: posts, isLoading: getPostsLoading } = useGetPostsQuery(
@@ -143,6 +142,7 @@ export default function FeedPage() {
       setCommentData({
         comment: "",
       });
+      commentsRefetch?.();
     } catch (error: any) {
       console.log(error);
       toast.error(error?.message || "Failed to react to post");
@@ -2647,7 +2647,7 @@ export default function FeedPage() {
                                   View {post?.counts?.comment} previous comments
                                 </button>
                               </div>
-                              <PostComments postId={post.id} />
+                              <PostComments postId={post.id} onRefetchReady={setCommentsRefetch} />
                             </div>
                           )}
                         </div>
