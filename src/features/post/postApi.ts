@@ -110,7 +110,7 @@ export const postApi = createApi({
     >({
       query: ({ commentId, react }) => {
         return {
-          url: `/comments/${commentId}/reaction`,
+          url: `/posts/comments/${commentId}/reaction`,
           method: "POST",
           body: { react },
         };
