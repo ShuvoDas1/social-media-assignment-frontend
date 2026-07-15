@@ -118,7 +118,6 @@ export const postApi = createApi({
         };
       },
       invalidatesTags: (result, error, { commentId, postId }) => [
-        { type: "Reactions", id: commentId },
         { type: "Comments", id: postId },
       ],
     }),
