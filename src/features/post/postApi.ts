@@ -73,7 +73,9 @@ export const postApi = createApi({
           method: "GET",
         };
       },
-      providesTags: ["Reactions"],
+      providesTags: (result, error, { postId }) => [
+        { type: "Reactions", id: postId },
+      ],
     }),
     postComment: builder.mutation<
       any,
@@ -115,7 +117,9 @@ export const postApi = createApi({
           body: { react },
         };
       },
-      invalidatesTags: ["Comments"],
+      invalidatesTags: (result, error, { commentId }) => [
+        { type: "Reactions", id: commentId },
+      ],
     }),
   }),
 });
