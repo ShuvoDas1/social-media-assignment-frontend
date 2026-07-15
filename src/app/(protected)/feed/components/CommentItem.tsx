@@ -33,6 +33,7 @@ const CommentItem = ({
       const res = await commentReaction({
         commentId: comment.id,
         react,
+        postId
       }).unwrap();
       toast.success("Comment reacted successfully");
     } catch (error: any) {

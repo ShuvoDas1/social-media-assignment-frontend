@@ -108,7 +108,7 @@ export const postApi = createApi({
 
     commentReaction: builder.mutation<
       any,
-      { commentId: number; react: string }
+      { commentId: number; react: string; postId: number }
     >({
       query: ({ commentId, react }) => {
         return {
@@ -117,8 +117,9 @@ export const postApi = createApi({
           body: { react },
         };
       },
-      invalidatesTags: (result, error, { commentId }) => [
+      invalidatesTags: (result, error, { commentId, postId }) => [
         { type: "Reactions", id: commentId },
+        { type: "Comments", id: postId },
       ],
     }),
   }),
